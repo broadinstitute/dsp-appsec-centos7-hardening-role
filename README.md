@@ -1,6 +1,6 @@
 # centos7-CIS Ansible Role
 
-This role can be used in an Ansible playbook to harden Debian 9 images to CIS 1.0.1 standards.
+This role can be used in an Ansible playbook to harden Centos 7 images to CIS 2.2.0 standards.
 
 ## Set Up
 
@@ -13,11 +13,11 @@ brew cask install vagrant virtualbox
 
 ```
 # Create project folder
-mkdir -p ~/MyProjects/deb9-test-box
-cd ~/MyProjects/deb9-test-box
+mkdir -p ~/MyProjects/centos7-test-box
+cd ~/MyProjects/centos7-test-box
 
 # Initialize vagrant 
-vagrant init debian/stretch64
+vagrant init centos/7
 
 # Check if VM image was created
 vagrant up
@@ -41,12 +41,12 @@ brew install ansible
 ```
 mkdir roles
 cd roles
-git clone https://github.com/broadinstitute/centos7-CIS.git
+git clone https://github.com/broadinstitute/dsp-appsec-centos7-hardening-role.git
 ```
-6. Open your Vangrant file and look for the `config.vm.box = "debian/stretch64"` line. Edit the Vagrantfile so it looks like the yaml below.
+6. Open your Vangrant file and look for the `config.vm.box = "centos/7"` line. Edit the Vagrantfile so it looks like the yaml below.
 ```
 ...
-  config.vm.box = "debian/stretch64"
+  config.vm.box = "centos/7"
   
   # Add the following code
   config.vm.provision "ansible" do |ansible|

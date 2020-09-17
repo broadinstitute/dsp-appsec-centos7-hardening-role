@@ -1,0 +1,164 @@
+# TODO: You can check value of registers by running with -v
+
+- name: "PRELIM | Check if prelink package is installed"
+  command: dpkg -s prelink
+  register: prelink_installed
+  changed_when: false
+  failed_when: false
+  check_mode: false
+  tags:
+    - skip_ansible_lint
+
+# TODO: apparmor and selinux, maybe switch to package manager ansible_facts
+
+- name: "PRELIM | Check if gdm3 is installed"
+  command: dpkg -s gdm3
+  register: gdm_installed
+  changed_when: false
+  failed_when: false
+  check_mode: false
+  tags:
+    - gui
+
+- name: "PRELIM | Populate Service facts"
+  service_facts:
+
+- name: "PRELIM | Install netstat"
+  yum:
+    name:
+      - net-tools
+    state: present
+  when:
+    - netstat_install
+
+- name: PRELIM | Gather facts on listening ports
+  listen_ports_facts:
+
+- name: "PRELIM | Flush existing firewall rules | Section 3"
+  iptables:
+    flush: true
+  when:
+    - centos7cis_section_3
+    - not centos7cis_skip_for_docker
+
+- name: "PRELIM | Make sure rules directory exists | Section 3"
+  file:
+    state: directory
+    owner: root
+    group: root
+    mode: 644
+    path: /etc/iptables
+  when:
+    - centos7cis_section_3
+
+- name: "PRELIM | Install auditd"
+  yum:
+    name:
+      - audit
+    state: present
+    update_cache: true
+  tags:
+    - rule_4.1.2
+
+- name: "PRELIM | Install auditd"
+  yum:
+    name:
+      - audit-libs
+    state: present
+    update_cache: true
+  tags:
+    - rule_4.1.2
+
+- name: "PRELIM | Install selinux"
+  selinux:
+    policy: targeted
+    state: enforcing
+  when:
+    - selinux
+  tags:
+    - rule_1.6.1.1
+
+- name: "PRELIM | Install AppArmor"
+  yum:
+    name: apparmor
+    state: present
+  when:
+    - not selinux
+  tags:
+    - level2
+    - scored
+    - patch
+    - rule_1.6.3
+
+- name: "PRELIM | Install AppArmor utils"
+  yum:
+    name: apparmor-utils
+    state: present
+  when:
+    - not selinux
+  tags:
+    - level2
+    - scored
+    - patch
+    - rule_1.6.3
+
+- name: "PRELIM | Install autofs"
+  yum:
+    name:
+      - autofs
+    state: present
+  when:
+    - autofs_installed
+  tags:
+    - autofs
+    - rule_1.1.22
+
+- name: "PRELIM | Install rsyslog"
+  yum:
+    name:
+      - rsyslog
+    state: present
+  when:
+    - rsyslog
+  tags:
+    - syslog
+    - rule_4.2.3
+
+- name: "PRELIM | Install syslog-ng"
+  yum:
+    name:
+      - syslog-ng
+    state: present
+  when:
+    - syslog
+    - ansible_facts.services["syslog-ng.service"] is not defined
+  tags:
+    - syslog
+    - rule_4.2.3
+
+- name: "PRELIM | Re-Populate Service facts"
+  service_facts:
+
+# TODO: verify output 5.4.2
+- name: "PRELIM | Check that system accounts are non-login #1"
+  shell: >
+    set -o pipefail &&
+    egrep -v "^\+" /etc/passwd | awk -F: '($1!="root" && $1!="sync" &&
+    $1!="shutdown" && $1!="halt" && $3<1000 && $7!="/usr/sbin/nologin" &&
+    $7!="/bin/false") {print}'
+  args:
+      executable: /bin/bash
+  register: system_accounts_non_login_1
+  changed_when: false
+  check_mode: false
+
+- name: "PRELIM | Check that system accounts are non-login #2"
+  shell: >
+    set -o pipefail &&
+    for user in `awk -F: '($1!="root" && $3 < 1000) {print $1 }' /etc/passwd`; do
+    passwd -S $user | awk -F ' ' '($2!="L") {print $1}'; done
+  args:
+      executable: /bin/bash
+  register: system_accounts_non_login_2
+  changed_when: false
+  check_mode: false

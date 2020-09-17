@@ -1,0 +1,6 @@
+---
+- name: Prepare
+  hosts: all
+  tasks:
+    - name: Install Python 3
+      raw: sudo apt-get install -y python3

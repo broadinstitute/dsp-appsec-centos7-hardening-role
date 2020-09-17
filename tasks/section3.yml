@@ -1,0 +1,646 @@
+---
+- name: "SCORED | 3.1.1 | PATCH | Ensure IP forwarding is disabled"
+  block:
+    - name: SCORED | 3.1.1 | PATCH | Ensure IP forwarding is disabled | Set net.ipv4.ip_forward
+      sysctl:
+        name: net.ipv4.ip_forward
+        value: '0'
+        state: present
+        reload: true
+        sysctl_set: true
+    - name: SCORED | 3.1.1 | PATCH | Ensure IP forwarding is disabled | Set net.ipv6.conf.all.forwarding
+      sysctl:
+        name: net.ipv6.conf.all.forwarding
+        value: '0'
+        state: present
+        reload: true
+        sysctl_set: true
+  when:
+    - centos7cis_rule_3_1_1
+    - not centos7cis_skip_for_docker
+  tags:
+      - level1
+      - scored
+      - patch
+      - sysctl
+      - rule_3.1.1
+
+- name: "SCORED | 3.1.2 | PATCH | Ensure packet redirect sending is disabled"
+  block:
+    - name: SCORED | 3.1.2 | PATCH | Ensure packet redirect sending is disabled | Set net.ipv4.conf.all.send_redirects
+      sysctl:
+        name: net.ipv4.conf.all.send_redirects
+        value: '0'
+        state: present
+        reload: true
+        sysctl_set: true
+    - name: SCORED | 3.1.2 | PATCH | Ensure packet redirect sending is disabled | Set net.ipv4.conf.default.send_redirects
+      sysctl:
+        name: net.ipv4.conf.default.send_redirects
+        value: '0'
+        state: present
+        reload: true
+        sysctl_set: true
+  when:
+    - centos7cis_rule_3_1_2
+    - not centos7cis_skip_for_docker
+  tags:
+      - level1
+      - scored
+      - patch
+      - sysctl
+      - rule_3.1.2
+
+- name: "SCORED | 3.2.1 | PATCH | Ensure source routed packets are not accepted"
+  block:
+    - name: SCORED | 3.2.1 | PATCH | Ensure source routed packets are not accepted | Set net.ipv4.conf.all.accept_source_route
+      sysctl:
+        name: net.ipv4.conf.all.accept_source_route
+        value: '0'
+        state: present
+        sysctl_set: true
+    - name: SCORED | 3.2.1 | PATCH | Ensure source routed packets are not accepted | Set net.ipv4.conf.default.accept_source_route
+      sysctl:
+        name: net.ipv4.conf.default.accept_source_route
+        value: '0'
+        state: present
+        sysctl_set: true
+    - name: SCORED | 3.2.1 | PATCH | Ensure source routed packets are not accepted | Set net.ipv6.conf.all.accept_source_route
+      sysctl:
+        name: net.ipv6.conf.all.accept_source_route
+        value: '0'
+        state: present
+        sysctl_set: true
+    - name: SCORED | 3.2.1 | PATCH | Ensure source routed packets are not accepted | Set net.ipv6.conf.default.accept_source_route
+      sysctl:
+        name: net.ipv6.conf.default.accept_source_route
+        value: '0'
+        state: present
+        sysctl_set: true
+  when:
+    - centos7cis_rule_3_2_1
+    - not centos7cis_skip_for_docker
+  tags:
+      - level1
+      - scored
+      - patch
+      - sysctl
+      - rule_3.2.1
+
+- name: "SCORED | 3.2.2 | PATCH | Ensure ICMP redirects are not accepted"
+  block:
+    - name: SCORED | 3.2.2 | PATCH | Ensure ICMP redirects are not accepted | Set net.ipv4.conf.all.accept_redirects
+      sysctl:
+        name: net.ipv4.conf.all.accept_redirects
+        value: '0'
+        state: present
+        reload: true
+        sysctl_set: true
+    - name: SCORED | 3.2.2 | PATCH | Ensure ICMP redirects are not accepted | Set net.ipv4.conf.default.accept_redirects
+      sysctl:
+        name: net.ipv4.conf.default.accept_redirects
+        value: '0'
+        state: present
+        reload: true
+        sysctl_set: true
+    - name: SCORED | 3.2.2 | PATCH | Ensure ICMP redirects are not accepted | Set net.ipv6.conf.all.accept_redirects
+      sysctl:
+        name: net.ipv6.conf.all.accept_redirects
+        value: '0'
+        state: present
+        reload: true
+        sysctl_set: true
+    - name: SCORED | 3.2.2 | PATCH | Ensure ICMP redirects are not accepted | Set net.ipv6.conf.default.accept_redirects
+      sysctl:
+        name: net.ipv6.conf.default.accept_redirects
+        value: '0'
+        state: present
+        reload: true
+        sysctl_set: true
+  when:
+    - centos7cis_rule_3_2_2
+    - not centos7cis_skip_for_docker
+  tags:
+      - level1
+      - scored
+      - patch
+      - sysctl
+      - rule_3.2.2
+
+- name: "SCORED | 3.2.3 | PATCH | Ensure secure ICMP redirects are not accepted"
+  block:
+    - name: CORED | 3.2.3 | PATCH | Ensure secure ICMP redirects are not accepted | Set net.ipv4.conf.all.secure_redirects
+      sysctl:
+        name: net.ipv4.conf.all.secure_redirects
+        value: '0'
+        state: present
+        reload: true
+        sysctl_set: true
+    - name: CORED | 3.2.3 | PATCH | Ensure secure ICMP redirects are not accepted | Set net.ipv4.conf.default.secure_redirects
+      sysctl:
+        name: net.ipv4.conf.default.secure_redirects
+        value: '0'
+        state: present
+        reload: true
+        sysctl_set: true
+  when:
+    - centos7cis_rule_3_2_3
+    - not centos7cis_skip_for_docker
+  tags:
+      - level1
+      - scored
+      - patch
+      - sysctl
+      - rule_3.2.3
+
+- name: "SCORED | 3.2.4 | PATCH | Ensure suspicious packets are logged"
+  block:
+    - name: SCORED | 3.2.4 | PATCH | Ensure suspicious packets are logged | Set net.ipv4.conf.all.log_martians
+      sysctl:
+        name: net.ipv4.conf.all.log_martians
+        value: '1'
+        state: present
+        reload: true
+        sysctl_set: true
+    - name: SCORED | 3.2.4 | PATCH | Ensure suspicious packets are logged | Set net.ipv4.conf.default.log_martians
+      sysctl:
+        name: net.ipv4.conf.default.log_martians
+        value: '1'
+        state: present
+        reload: true
+        sysctl_set: true
+  when:
+    - centos7cis_rule_3_2_4
+    - not centos7cis_skip_for_docker
+  tags:
+      - level1
+      - scored
+      - patch
+      - sysctl
+      - rule_3.2.4
+
+- name: "SCORED | 3.2.5 | PATCH | Ensure broadcast ICMP requests are ignored"
+  sysctl:
+    name: net.ipv4.icmp_echo_ignore_broadcasts
+    value: '1'
+    state: present
+    reload: true
+    sysctl_set: true
+  when:
+    - centos7cis_rule_3_2_5
+    - not centos7cis_skip_for_docker
+  tags:
+      - level1
+      - scored
+      - patch
+      - sysctl
+      - rule_3.2.5
+
+- name: "SCORED | 3.2.6 | PATCH | Ensure bogus ICMP responses are ignored"
+  sysctl:
+    name: net.ipv4.icmp_ignore_bogus_error_responses
+    value: '1'
+    state: present
+    reload: true
+    sysctl_set: true
+  when:
+    - centos7cis_rule_3_2_6
+    - not centos7cis_skip_for_docker
+  tags:
+      - level1
+      - scored
+      - patch
+      - sysctl
+      - rule_3.2.6
+
+- name: "SCORED | 3.2.7 | PATCH | Ensure Reverse Path Filtering is enabled"
+  block:
+    - name: SCORED | 3.2.7 | PATCH | Ensure Reverse Path Filtering is enabled | Set net.ipv4.conf.all.rp_filter
+      sysctl:
+        name: net.ipv4.conf.all.rp_filter
+        value: '1'
+        state: present
+        reload: true
+        sysctl_set: true
+    - name: SCORED | 3.2.7 | PATCH | Ensure Reverse Path Filtering is enabled | Set net.ipv4.conf.default.rp_filter
+      sysctl:
+        name: net.ipv4.conf.default.rp_filter
+        value: '1'
+        state: present
+        reload: true
+        sysctl_set: true
+  when:
+    - centos7cis_rule_3_2_7
+    - not centos7cis_skip_for_docker
+  tags:
+      - level1
+      - scored
+      - patch
+      - sysctl
+      - rule_3.2.7
+  
+- name: "SCORED | 3.2.8 | PATCH | Ensure TCP SYN Cookies is enabled"
+  sysctl:
+    name: net.ipv4.tcp_syncookies
+    value: '1'
+    state: present
+    reload: true
+    sysctl_set: true
+  when:
+    - centos7cis_rule_3_2_8
+    - not centos7cis_skip_for_docker
+  tags:
+      - level1
+      - scored
+      - patch
+      - sysctl
+      - rule_3.2.8
+
+- name: "NOTSCORED | 3.3.1 | PATCH | Ensure IPv6 router advertisements are not accepted"
+  block:
+    - name: NOTSCORED | 3.3.1 | PATCH | Ensure IPv6 router advertisements are not accepted | Set net.ipv6.conf.all.accept_ra
+      sysctl:
+        name: net.ipv6.conf.all.accept_ra
+        value: '0'
+        state: present
+        reload: true
+        sysctl_set: true
+    - name: NOTSCORED | 3.3.1 | PATCH | Ensure IPv6 router advertisements are not accepted | Set net.ipv6.conf.default.accept_ra
+      sysctl:
+        name: net.ipv6.conf.default.accept_ra
+        value: '0'
+        state: present
+        reload: true
+        sysctl_set: true
+  when:
+    - centos7cis_rule_3_3_1
+    - not centos7cis_skip_for_docker
+  tags:
+      - level1
+      - scored
+      - patch
+      - sysctl
+      - rule_3.3.1
+
+- name: "NOTSCORED | 3.3.2 | PATCH | Ensure IPv6 redirects are not accepted"
+  block:
+    - name: SCORED | 3.3.2 | PATCH | Ensure IPv6 redirects are not accepted | all
+      sysctl:
+        name: net.ipv6.conf.all.accept_redirects
+        value: '0'
+        state: present
+        reload: true
+        sysctl_set: true
+    - name: SCORED | 3.3.2 | PATCH | Ensure IPv6 redirects are not accepted | default
+      sysctl:
+        name: net.ipv6.conf.default.accept_redirects
+        value: '0'
+        state: present
+        reload: true
+        sysctl_set: true
+  when:
+    - centos7cis_rule_3_3_2
+    - not centos7cis_skip_for_docker
+  tags:
+      - level1
+      - scored
+      - patch
+      - sysctl
+      - rule_3.3.2
+
+- name: "NOTSCORED | 3.3.3 | PATCH | Ensure IPv6 is disabled"
+  lineinfile:
+    state: present
+    dest: /etc/default/grub
+    backrefs: yes
+    regexp: '^GRUB_CMDLINE_LINUX="(.*)"'
+    line: 'GRUB_CMDLINE_LINUX="selinux=1 security=selinux ipv6.disable=1"'
+  when:
+    - centos7cis_rule_3_3_3
+    - grub
+  notify:
+    - update grub
+  tags:
+    - level1
+    - notscored
+    - patch
+    - rule_3.3.3
+
+- name: "SCORED | 3.4.1 | PATCH | Ensure TCP Wrappers is installed"
+  yum:
+    name:
+      - tcp_wrappers
+    state: present
+  when:
+    - centos7cis_rule_3_4_1
+  tags:
+    - level1
+    - scored
+    - patch
+    - rule_3.4.1
+
+- name: "NOTSCORED | 3.4.2 | PATCH | Ensure /etc/hosts.allow is configured"
+  template:
+      src: hosts.allow.j2
+      dest: /etc/hosts.allow
+      owner: root
+      group: root
+      mode: 0644
+  when:
+    - centos7cis_rule_3_4_2
+  tags:
+    - level1
+    - notscored
+    - patch
+    - rule_3.4.2
+
+- name: "NOTSCORED | 3.4.3 | PATCH | Ensure /etc/hosts.deny is configured"
+  lineinfile:
+      dest: /etc/hosts.deny
+      regexp: "^(#)?ALL"
+      line: "ALL: ALL"
+      create: true
+      state: present
+  when:
+    - centos7cis_rule_3_4_3
+  tags:
+    - level1
+    - notscored
+    - patch
+    - rule_3.4.3
+
+- name: "SCORED | 3.4.4 | PATCH | Ensure permissions on /etc/hosts.allow are configured"
+  file:
+      path: /etc/hosts.allow
+      owner: root
+      group: root
+      mode: 0644
+  when:
+    - centos7cis_rule_3_4_4
+  tags:
+    - level1
+    - scored
+    - patch
+    - rule_3.4.4
+
+- name: "SCORED | 3.4.5 | PATCH | Ensure permissions on /etc/hosts.deny are configured"
+  file:
+      path: /etc/hosts.deny
+      owner: root
+      group: root
+      mode: 0644
+  when:
+    - centos7cis_rule_3_4_5
+  tags:
+    - level1
+    - scored
+    - patch
+    - rule_3.4.5
+
+- name: "NOTSCORED | 3.5.1 | PATCH | Ensure DCCP is disabled"
+  lineinfile:
+      dest: /etc/modprobe.d/{{ modprobe_conf_file }}
+      line: "install dccp /bin/true"
+      create: true
+      state: present
+  when:
+    - centos7cis_rule_3_5_1
+  tags:
+    - level1
+    - notscored
+    - patch
+    - rule_3.5.1
+
+- name: "NOTSCORED | 3.5.2 | PATCH | Ensure SCTP is disabled"
+  lineinfile:
+      dest: /etc/modprobe.d/{{ modprobe_conf_file }}
+      line: "install sctp /bin/true"
+      create: true
+      state: present
+  when:
+    - centos7cis_rule_3_5_2
+  tags:
+    - level1
+    - notscored
+    - patch
+    - rule_3.5.2
+
+- name: "NOTSCORED | 3.5.3 | PATCH | Ensure RDS is disabled"
+  lineinfile:
+      dest: /etc/modprobe.d/{{ modprobe_conf_file }}
+      line: "install rds /bin/true"
+      create: true
+      state: present
+  when:
+    - centos7cis_rule_3_5_3
+  tags:
+    - level1
+    - notscored
+    - patch
+    - rule_3.5.3
+
+- name: "NOTSCORED | 3.5.4 | PATCH | Ensure TIPC is disabled"
+  lineinfile:
+      dest: /etc/modprobe.d/{{ modprobe_conf_file }}
+      line: "install tipc /bin/true"
+      create: true
+      state: present
+  when:
+    - centos7cis_rule_3_5_4
+  tags:
+    - level1
+    - notscored
+    - patch
+    - rule_3.5.4
+
+- name: "SCORED | 3.6.1 | PATCH | Ensure iptables is installed"
+  yum:
+    name:
+      - iptables
+    state: present
+  when:
+    - centos7cis_rule_3_6_1
+  tags:
+    - level1
+    - scored
+    - patch
+    - rule_3.6.1
+
+- name: "SCORED | 3.6.2 | PATCH | Ensure default deny firewall policy"
+  block: 
+    - name: "SCORED | 3.6.2 | PATCH | Ensure default deny firewall policy | INPUT"
+      iptables:
+        chain: INPUT
+        policy: DROP
+        ip_version: ipv4
+      notify:
+        - persist iptables
+
+    - name: "SCORED | 3.6.2 | PATCH | Ensure default deny firewall policy | OUTPUT"
+      iptables:
+        chain: OUTPUT
+        policy: DROP
+        ip_version: ipv4
+      notify:
+        - persist iptables
+
+    - name: "SCORED | 3.6.2 | PATCH | Ensure default deny firewall policy | FORWARD"
+      iptables:
+        chain: FORWARD
+        policy: DROP
+        ip_version: ipv4
+      notify:
+        - persist iptables
+  when:
+    - centos7cis_rule_3_6_2
+    - centos7cis_setup_firewall
+  tags:
+    - level1
+    - scored
+    - patch
+    - rule_3.6.2
+
+- name: "SCORED | 3.6.3 | PATCH | Ensure loopback traffic is configured"
+  block: 
+    - name: "SCORED | 3.6.3 | PATCH | Ensure loopback traffic is configured  | INPUT"
+      iptables:
+        chain: INPUT
+        in_interface: lo
+        jump: ACCEPT
+        ip_version: ipv4
+      notify:
+        - persist iptables
+
+    - name: "SCORED | 3.6.3 | PATCH | Ensure loopback traffic is configured | OUTPUT"
+      iptables:
+        chain: OUTPUT
+        out_interface: lo
+        jump: ACCEPT
+        ip_version: ipv4
+      notify:
+        - persist iptables
+
+    - name: "SCORED | 3.6.3 | PATCH | Ensure loopback traffic is configured | DROP OTHER POLICIES"
+      iptables:
+        chain: INPUT
+        source: 127.0.0.0/8
+        jump: DROP
+        ip_version: ipv4
+      notify:
+        - persist iptables       
+  when:
+    - centos7cis_rule_3_6_3
+    - centos7cis_setup_firewall
+  tags:
+    - level1
+    - scored
+    - patch
+    - rule_3.6.3
+
+- name: "NOTSCORED | 3.6.4 | PATCH | Ensure outbound and established connections are configured"
+  block: 
+    - name: "NOTSCORED | 3.6.4 | PATCH | Ensure outbound and established connections are configured | INPUT - tcp"
+      iptables:
+        chain: INPUT
+        protocol: tcp
+        ctstate: ESTABLISHED
+        jump: ACCEPT
+        ip_version: ipv4
+      notify:
+        - persist iptables
+
+    - name: "NOTSCORED | 3.6.4 | PATCH | Ensure outbound and established connections are configured | INPUT - udp"
+      iptables:
+        chain: INPUT
+        protocol: udp
+        ctstate: ESTABLISHED
+        jump: ACCEPT
+        ip_version: ipv4
+      notify:
+        - persist iptables
+
+    - name: "NOTSCORED | 3.6.4 | PATCH | Ensure outbound and established connections are configured | INPUT - icmp"
+      iptables:
+        chain: INPUT
+        protocol: icmp
+        ctstate: ESTABLISHED
+        jump: ACCEPT
+        ip_version: ipv4
+      notify:
+        - persist iptables
+
+    - name: "NOTSCORED | 3.6.4 | PATCH | Ensure outbound and established connections are configured | OUTPUT - tcp"
+      iptables:
+        chain: OUTPUT
+        protocol: tcp
+        ctstate: NEW,ESTABLISHED
+        jump: ACCEPT
+        ip_version: ipv4
+      notify:
+        - persist iptables
+
+    - name: "NOTSCORED | 3.6.4 | PATCH | Ensure outbound and established connections are configured | OUTPUT - udp"
+      iptables:
+        chain: OUTPUT
+        protocol: udp
+        ctstate: NEW,ESTABLISHED
+        jump: ACCEPT
+        ip_version: ipv4
+      notify:
+        - persist iptables
+
+    - name: "NOTSCORED | 3.6.4 | PATCH | Ensure outbound and established connections are configured | OUTPUT - icmp"
+      iptables:
+        chain: OUTPUT
+        protocol: icmp
+        ctstate: NEW,ESTABLISHED
+        jump: ACCEPT
+        ip_version: ipv4
+      notify:
+        - persist iptables
+
+  when:
+    - centos7cis_rule_3_6_4
+    - centos7cis_setup_firewall
+  tags:
+    - level1
+    - notscored
+    - patch
+    - rule_3.6.4
+
+- name: "SCORED | 3.6.5 | PATCH | Ensure firewall rules exist for all open ports"
+  iptables:
+    chain: INPUT
+    protocol: "{{ item.protocol }}"
+    destination_port: "{{ item.port }}"
+    ctstate: NEW
+    jump: ACCEPT
+    ip_version: ipv4
+  vars: 
+    open_ports: "{{ ansible_facts.tcp_listen | list }}"
+  loop: "{{ open_ports }}"
+  when:
+    - centos7cis_rule_3_6_5
+    - centos7cis_setup_firewall
+  notify:
+    - persist iptables
+  tags:
+    - level1
+    - scored
+    - patch
+    - rule_3.6.5
+
+- name: "NOTSCORED | 3.7 | PATCH | Ensure wireless interfaces are disabled"
+  net_interface:
+    name: "{{ item }}"
+    enabled: False
+  with_items: "{{ ansible_interfaces }}"
+  when:
+    - centos7cis_rule_3_7
+    - ansible_network_os is defined
+    - disable_wireless
+  tags:
+    - level1
+    - notscored
+    - patch
+    - rule_3.7

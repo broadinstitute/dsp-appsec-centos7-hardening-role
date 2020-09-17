@@ -1,0 +1,70 @@
+---
+# handlers file for centos7-CIS
+- name: update grub
+  become: true
+  command: update-grub
+
+- name: systemd restart tmp.mount
+  become: true
+  systemd:
+      name: tmp.mount
+      daemon_reload: true
+      enabled: true
+      masked: false
+      state: reloaded
+  when:
+    - ansible_virtualization_type != "docker"
+    - not centos7cis_chroot
+  ignore_errors: "{{ centos7cis_ignore_remount_errors }}"
+
+- name: systemd restart var-tmp.mount
+  become: true
+  systemd:
+      name: var-tmp.mount
+      daemon_reload: true
+      enabled: true
+      masked: false
+      state: reloaded
+  when:
+    - not centos7cis_chroot
+  ignore_errors: "{{ centos7cis_ignore_remount_errors }}"
+
+- name: persist iptables
+  shell: iptables-save > /etc/iptables/rules.v4
+
+- name: persist ip6tables
+  shell: ip6tables-save > /etc/iptables/rules.v6
+
+- name: restart auditd
+  systemd:
+    name: auditd
+    state: restarted
+    enabled: true
+  when:
+    - not centos7cis_skip_for_docker
+    - not centos7cis_chroot
+
+- name: reload rsyslogd
+  command: pkill -HUP rsyslogd  
+  when:
+    - not centos7cis_skip_for_docker
+
+- name: restart syslog-ng
+  systemd:
+    name: syslog-ng
+    state: restarted
+    enabled: true
+    masked: false
+  when:
+    - ansible_facts.services["syslog-ng.service"] is defined
+    - not centos7cis_skip_for_docker
+
+- name: restart sshd
+  systemd:
+    name: sshd
+    state: restarted
+    enabled: true
+    masked: false
+  when:
+    - ansible_facts.services["sshd.service"] is defined
+    - not centos7cis_skip_for_docker

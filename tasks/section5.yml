@@ -1,0 +1,831 @@
+---
+- name: "SCORED | 5.1.1 | PATCH | Ensure cron daemon is enabled"
+  systemd:
+      name: cron
+      state: started
+      enabled: true
+  when:
+    - centos7cis_rule_5_1_1
+    - not centos7cis_skip_for_docker
+  tags:
+    - level1
+    - scored
+    - patch
+    - cron
+    - rule_5.1.1
+
+- name: "SCORED | 5.1.2 | PATCH | Ensure permissions on /etc/crontab are configured"
+  file:
+      dest: /etc/crontab
+      owner: root
+      group: root
+      mode: o-rwx
+  when:
+      - centos7cis_rule_5_1_2
+  tags:
+    - level1
+    - scored
+    - patch
+    - cron
+    - rule_5.1.2
+
+- name: "SCORED | 5.1.3 | PATCH | Ensure permissions on /etc/cron.hourly are configured"
+  file:
+      dest: /etc/cron.hourly
+      state: directory
+      owner: root
+      group: root
+      mode: og-rwx
+  when:
+      - centos7cis_rule_5_1_3
+  tags:
+    - level1
+    - scored
+    - patch
+    - cron
+    - rule_5.1.3
+
+- name: "SCORED | 5.1.4 | PATCH | Ensure permissions on /etc/cron.daily are configured"
+  file:
+      dest: /etc/cron.daily
+      state: directory
+      owner: root
+      group: root
+      mode: og-rwx
+  when:
+      - centos7cis_rule_5_1_4
+  tags:
+    - level1
+    - scored
+    - patch
+    - cron
+    - rule_5.1.4
+
+- name: "SCORED | 5.1.5 | PATCH | Ensure permissions on /etc/cron.weekly are configured"
+  file:
+      dest: /etc/cron.weekly
+      state: directory
+      owner: root
+      group: root
+      mode: og-rwx
+  when:
+      - centos7cis_rule_5_1_5
+  tags:
+    - level1
+    - scored
+    - patch
+    - cron
+    - rule_5.1.5
+
+- name: "SCORED | 5.1.6 | PATCH | Ensure permissions on /etc/cron.monthly are configured"
+  file:
+      dest: /etc/cron.monthly
+      state: directory
+      owner: root
+      group: root
+      mode: og-rwx
+  when:
+      - centos7cis_rule_5_1_6
+  tags:
+    - level1
+    - scored
+    - patch
+    - cron
+    - rule_5.1.6
+
+- name: "SCORED | 5.1.7 | PATCH | Ensure permissions on /etc/cron.d are configured"
+  file:
+      dest: /etc/cron.d
+      state: directory
+      owner: root
+      group: root
+      mode: og-rwx
+  when:
+      - centos7cis_rule_5_1_7
+  tags:
+    - level1
+    - scored
+    - patch
+    - cron
+    - rule_5.1.7
+
+- name: "SCORED | 5.1.8 | PATCH | Ensure at/cron is restricted to authorized users"
+  block:
+      - name: "SCORED | 5.1.8 | PATCH | Ensure at/cron is restricted to authorized users | rm /etc/cron.deny"
+        file:
+            dest: /etc/cron.deny
+            state: absent
+
+      - name: "SCORED | 5.1.8 | PATCH | Ensure at/cron is restricted to authorized users | rm /etc/at.deny"
+        file:
+            dest: /etc/at.deny
+            state: absent
+
+      - name: "SCORED | 5.1.8 | PATCH | Ensure at/cron is restricted to authorized users | create/permissions of cron.allow"
+        file:
+            dest: /etc/cron.allow
+            state: touch
+            owner: root
+            group: root
+            mode: og-rwx
+
+      - name: "SCORED | 5.1.8 | PATCH | Ensure at/cron is restricted to authorized users | create/permissions of at.allow"
+        file:
+            dest: /etc/at.allow
+            state: touch
+            owner: root
+            group: root
+            mode: og-rwx
+  when:
+    - centos7cis_rule_5_1_8
+    - not centos7cis_skip_for_docker
+  tags:
+    - level1
+    - scored
+    - patch
+    - cron
+    - rule_5.1.8
+
+- name: "SCORED | 5.2.1 | PATCH | Ensure permissions on /etc/ssh/sshd_config are configured"
+  file:
+      dest: /etc/ssh/sshd_config
+      state: file
+      owner: root
+      group: root
+      mode: og-rwx
+  when:
+    - centos7cis_rule_5_2_1
+    - not centos7cis_skip_for_docker
+  tags:
+    - level1
+    - scored
+    - patch
+    - sshd
+    - rule_5.2.1
+
+- name: "SCORED | 5.2.2 | PATCH | Ensure SSH Protocol is set to 2"
+  lineinfile:
+      dest: /etc/ssh/sshd_config
+      regexp: '^Protocol'
+      line: 'Protocol 2'
+      state: present
+  when:
+    - centos7cis_rule_5_2_2
+    - not centos7cis_skip_for_docker
+  notify:
+    - restart sshd
+  tags:
+    - level1
+    - scored
+    - patch
+    - syslog
+    - rule_5.2.2
+
+- name: "SCORED | 5.2.3 | PATCH | Ensure SSH LogLevel is Set to INFO" 
+  lineinfile:
+      dest: /etc/ssh/sshd_config
+      regexp: '^LogLevel'
+      line: 'LogLevel INFO'
+      state: present
+  when:
+      - centos7cis_rule_5_2_3
+      - not centos7cis_skip_for_docker
+      - verbose_logs
+  notify:
+    - restart sshd
+  tags:
+    - level1
+    - scored
+    - patch
+    - sshd
+    - rule_5.2.3
+
+- name: "SCORED | 5.2.4 | PATCH | Ensure SSH X11 forwarding is disabled" 
+  lineinfile:
+      dest: /etc/ssh/sshd_config
+      regexp: '^X11Forwarding'
+      line: 'X11Forwarding no'
+      state: present
+  when:
+    - centos7cis_rule_5_2_4
+    - not centos7cis_skip_for_docker
+  notify:
+    - restart sshd
+  tags:
+    - level1
+    - level2
+    - scored
+    - patch
+    - sshd
+    - rule_5.2.4
+
+- name: "SCORED | 5.2.5 | PATCH | Ensure SSH MaxAuthTries is set to 4 or less" 
+  lineinfile:
+      dest: /etc/ssh/sshd_config
+      regexp: '^MaxAuthTries'
+      line: 'MaxAuthTries 4'
+      state: present
+  when:
+    - centos7cis_rule_5_2_5
+    - not centos7cis_skip_for_docker
+  notify:
+    - restart sshd
+  tags:
+    - level1
+    - scored
+    - patch
+    - sshd
+    - rule_5.2.5
+
+- name: "SCORED | 5.2.6 | PATCH | Ensure SSH IgnoreRhosts is enabled" 
+  lineinfile:
+      dest: /etc/ssh/sshd_config
+      regexp: '^IgnoreRhosts'
+      line: 'IgnoreRhosts yes'
+      state: present
+  when:
+    - centos7cis_rule_5_2_6
+    - not centos7cis_skip_for_docker
+  notify:
+    - restart sshd
+  tags:
+    - level1
+    - scored
+    - patch
+    - sshd
+    - rule_5.2.6
+
+- name: "SCORED | 5.2.7 | PATCH | Ensure SSH HostbasedAuthentication is disabled" 
+  lineinfile:
+      dest: /etc/ssh/sshd_config
+      regexp: '^HostbasedAuthentication'
+      line: 'HostbasedAuthentication no'
+      state: present
+  when:
+    - centos7cis_rule_5_2_7
+    - not centos7cis_skip_for_docker
+  notify:
+    - restart sshd
+  tags:
+    - level1
+    - scored
+    - patch
+    - sshd
+    - rule_5.2.7
+
+- name: "SCORED | 5.2.8 | PATCH | Ensure SSH root login is disabled" 
+  lineinfile:
+      dest: /etc/ssh/sshd_config
+      regexp: '^PermitRootLogin'
+      line: 'PermitRootLogin no'
+      state: present
+  when:
+    - centos7cis_rule_5_2_8
+    - not centos7cis_skip_for_docker
+  notify:
+    - restart sshd
+  tags:
+    - level1
+    - scored
+    - patch
+    - sshd
+    - rule_5.2.8
+
+- name: "SCORED | 5.2.9 | PATCH | Ensure SSH PermitEmptyPasswords is disabled" 
+  lineinfile:
+      dest: /etc/ssh/sshd_config
+      regexp: '^PermitEmptyPasswords'
+      line: 'PermitEmptyPasswords no'
+      state: present
+  when:
+    - centos7cis_rule_5_2_9
+    - not centos7cis_skip_for_docker
+  notify:
+    - restart sshd
+  tags:
+    - level1
+    - scored
+    - patch
+    - sshd
+    - rule_5.2.9
+
+- name: "SCORED | 5.2.10 | PATCH | Ensure SSH PermitUserEnvironment is disabled" 
+  lineinfile:
+      dest: /etc/ssh/sshd_config
+      regexp: '^PermitUserEnvironment'
+      line: 'PermitUserEnvironment no'
+      state: present
+  when:
+    - centos7cis_rule_5_2_10
+    - not centos7cis_skip_for_docker
+  notify:
+    - restart sshd
+  tags:
+    - level1
+    - scored
+    - patch
+    - sshd
+    - rule_5.2.10
+
+- name: "SCORED | 5.2.11 | PATCH | Ensure only strong MAC algorithms are used"
+  block:
+    - name: "SCORED | 5.2.11 | PATCH | Ensure only strong MAC algorithms are used | Check allowed_mac"
+      assert:
+        that:
+          - "'hmac-md5' not in allowed_mac"
+          - "'hmac-md5-96' not in allowed_mac"
+          - "'hmac-ripemd160' not in allowed_mac"
+          - "'hmac-sha1' not in allowed_mac"
+          - "'hmac-sha1-96' not in allowed_mac"
+          - "'umac-64@openssh.com' not in allowed_mac"
+          - "'umac-128@openssh.com' not in allowed_mac"
+          - "'hmac-md5-etm@openssh.com' not in allowed_mac"
+          - "'hmac-md5-96-etm@openssh.com' not in allowed_mac"
+          - "'hmac-ripemd160-etm@openssh.com' not in allowed_mac"
+          - "'hmac-sha1-etm@openssh.com' not in allowed_mac"
+          - "'hmac-sha1-96-etm@openssh.com' not in allowed_mac"
+          - "'umac-64-etm@openssh.com' not in allowed_mac"
+          - "'umac-128-etm@openssh.com' not in allowed_mac"
+        fail_msg: "allowed_mac includes weak mac algorithms"
+    
+    - name: "SCORED | 5.2.11 | PATCH | Ensure only strong MAC algorithms are used | update sshd_config"
+      lineinfile:
+        dest: /etc/ssh/sshd_config
+        regexp: '^MACs'
+        line: 'MACs {{ allowed_mac }}'
+        state: present  
+      notify:
+        - restart sshd
+  when:
+    - centos7cis_rule_5_2_11
+    - not centos7cis_skip_for_docker
+  tags:
+    - level1
+    - scored
+    - patch
+    - sshd
+    - rule_5.2.11
+
+- name: "SCORED | 5.2.12 | PATCH | Ensure SSH Idle Timeout Interval is configured"
+  block:
+    - name: "SCORED | 5.2.12 | PATCH | Ensure SSH Idle Timeout Interval is configured | update ClientAliveInterval"
+      lineinfile:
+        dest: /etc/ssh/sshd_config
+        regexp: '^ClientAliveInterval'
+        line: 'ClientAliveInterval 300'
+        state: present
+      notify:
+        - restart sshd
+    
+    - name: "SCORED | 5.2.12 | PATCH | Ensure only strong Key Exchange algorithms are used | update ClientAliveCountMax"
+      lineinfile:
+        dest: /etc/ssh/sshd_config
+        regexp: '^ClientAliveCountMax'
+        line: 'ClientAliveCountMax 0'
+        state: present
+      notify:
+        - restart sshd
+  when:
+    - centos7cis_rule_5_2_12
+    - not centos7cis_skip_for_docker
+  tags:
+    - level1
+    - scored
+    - patch
+    - sshd
+    - rule_5.2.12
+
+- name: "SCORED | 5.2.13 | PATCH | Ensure SSH LoginGraceTime is set to one minute or less" 
+  lineinfile:
+      dest: /etc/ssh/sshd_config
+      regexp: '^LoginGraceTime'
+      line: 'LoginGraceTime 60'
+      state: present
+  when:
+    - centos7cis_rule_5_2_13
+    - not centos7cis_skip_for_docker
+  notify:
+    - restart sshd
+  tags:
+    - level1
+    - scored
+    - patch
+    - sshd
+    - rule_5.2.13
+
+- name: "SCORED | 5.2.14 | PATCH | Ensure SSH access is limited"
+  block:
+    - name: "SCORED | 5.2.14 | PATCH | Ensure SSH access is limited | allowusers options"
+      lineinfile:
+        dest: /etc/ssh/sshd_config
+        regexp: '^AllowUsers'
+        line: 'AllowUsers <userlist>'
+        state: present
+      notify:
+        - restart sshd
+    
+    - name: "SCORED | 5.2.14 | PATCH | Ensure SSH access is limited | allowgroups options"
+      lineinfile:
+        dest: /etc/ssh/sshd_config
+        regexp: '^AllowGroups'
+        line: 'AllowGroups <grouplist>'
+        state: present
+      notify:
+        - restart sshd
+
+    - name: "SCORED | 5.2.14 | PATCH | Ensure SSH access is limited | denyusers options"
+      lineinfile:
+        dest: /etc/ssh/sshd_config
+        regexp: '^DenyUsers'
+        line: 'DenyUsers <userlist>'
+        state: present
+      notify:
+        - restart sshd
+    
+    - name: "SCORED | 5.2.14 | PATCH | Ensure SSH access is limited | denygroups options"
+      lineinfile:
+        dest: /etc/ssh/sshd_config
+        regexp: '^DenyGroups'
+        line: 'DenyGroups <grouplist>'
+        state: present
+      notify:
+        - restart sshd
+  when:
+    - centos7cis_rule_5_2_14
+    - not centos7cis_skip_for_docker
+  tags:
+    - level1
+    - scored
+    - patch
+    - sshd
+    - rule_5.2.14
+
+- name: "SCORED | 5.2.15 | PATCH |  Ensure SSH warning banner is configured" 
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    regexp: '^Banner'
+    line: 'Banner /etc/issue.net'
+    state: present
+  when:
+    - centos7cis_rule_5_2_15
+    - not centos7cis_skip_for_docker
+  notify:
+    - restart sshd
+  tags:
+    - level1
+    - scored
+    - patch
+    - sshd
+    - rule_5.2.15
+
+- name: "SCORED | 5.3.1 | PATCH | Ensure password creation requirements are configured"
+  block:
+      - name: "SCORED | 5.3.1 | PATCH | Ensure pwquality is installed"
+        yum:
+          name: python-pwquality
+          state: present
+
+      - name: "SCORED | 5.3.1 | PATCH | include the appropriate options for pam_pwquality.so"
+        lineinfile:
+          state: present
+          dest: /etc/pam.d/password-auth
+          regexp: 'pam_pwquality.so'
+          line: 'password requisite pam_pwquality.so try_first_pass retry=3'
+
+      - name: "SCORED | 5.3.1 | PATCH | include the appropriate options for pam_pwquality.so"
+        lineinfile:
+          state: present
+          dest: /etc/pam.d/system-auth
+          regexp: 'pam_pwquality.so'
+          line: 'password requisite pam_pwquality.so try_first_pass retry=3'
+
+      - name: "SCORED | 5.3.1 | PATCH | Ensure password creation requirements are configured"
+        lineinfile:
+          state: present
+          dest: /etc/security/pwquality.conf
+          regexp: '^{{ item.key }}'
+          line: '{{ item.key }} = {{ item.value }}'
+        with_items:
+            - "{{ centos7cis_pwquality }}"
+  when:
+      - centos7cis_rule_5_3_1
+  tags:
+      - level1
+      - scored
+      - patch
+      - rule_5.3.1
+
+- name: "SCORED | 5.3.2 | PATCH | Ensure lockout for failed password attempts is configured"
+  block:
+      - name: "SCORED | 5.3.2 | PATCH | Ensure lockout for failed password attempts is configured | pam_tally2"
+        lineinfile:
+          state: present
+          dest: /etc/pam.d/password-auth
+          regexp: 'pam_unix.so'
+          line: 'auth required pam_faillock.so preauth audit silent deny=5 unlock_time=900\nauth [success=1 default=bad] pam_unix.so\nauth [default=die] pam_faillock.so authfail audit deny=5 unlock_time=900\nauth sufficient pam_faillock.so authsucc audit deny=5 unlock_time=900'
+
+      - name: "SCORED | 5.3.2 | PATCH | Ensure lockout for failed password attempts is configured | pam_tally2.so"
+        lineinfile:
+          state: present
+          dest: /etc/pam.d/system-auth
+          regexp: 'pam_unix.so'
+          line: 'auth required pam_faillock.so preauth audit silent deny=5 unlock_time=900\nauth [success=1 default=bad] pam_unix.so\nauth [default=die] pam_faillock.so authfail audit deny=5 unlock_time=900\nauth sufficient pam_faillock.so authsucc audit deny=5 unlock_time=900'
+  when:
+      - centos7cis_rule_5_3_2
+  tags:
+      - level1
+      - scored
+      - patch
+      - rule_5.3.2
+
+- name: "SCORED | 5.3.3 | PATCH | Ensure password reuse is limited"
+  lineinfile:
+    state: present
+    dest:  /etc/pam.d/password-auth
+    regexp: '^password\s+required\s+pam_pwhistory.so'
+    line: 'password required pam_pwhistory.so remember=5'
+
+  when:
+      - centos7cis_rule_5_3_3
+  tags:
+      - level1
+      - scored
+      - patch
+      - rule_5.3.3
+
+- name: "SCORED | 5.3.3 | PATCH | Ensure password reuse is limited"
+  lineinfile:
+    state: present
+    dest:  /etc/pam.d/system-auth
+    regexp: '^password\s+required\s+pam_pwhistory.so'
+    line: 'password required pam_pwhistory.so remember=5'
+  when:
+      - centos7cis_rule_5_3_3
+  tags:
+      - level1
+      - scored
+      - patch
+      - rule_5.3.3
+
+- name: "SCORED | 5.3.4 | PATCH | Ensure password hashing algorithm is SHA-512"
+  lineinfile:
+    state: present
+    dest:  /etc/pam.d/password-auth
+    regexp: '^password\s+pam_unix.so'
+    line: 'password sufficient pam_unix.so sha512'
+
+  when:
+      - centos7cis_rule_5_3_4
+  tags:
+      - level1
+      - scored
+      - patch
+      - rule_5.3.4
+
+- name: "SCORED | 5.3.4 | PATCH | Ensure password hashing algorithm is SHA-512"
+  lineinfile:
+    state: present
+    dest:  /etc/pam.d/system-auth
+    regexp: '^password\s+pam_unix.so'
+    line: 'password sufficient pam_unix.so sha512'
+
+  when:
+      - centos7cis_rule_5_3_4
+  tags:
+      - level1
+      - scored
+      - patch
+      - rule_5.3.4
+
+- name: "SCORED | 5.4.1.1 | PATCH | Ensure password expiration is 365 days or less"
+  block:
+    - name: "SCORED | 5.4.1.1 | PATCH | Ensure password expiration is 365 days or less | ensure max_days is less than 365"
+      assert:
+        that:
+          - centos7cis_pass['max_days'] <= 365
+        fail_msg: "centos7cis_pass['max_days'] variable is more than 365 days"
+
+    - name: "SCORED | 5.4.1.1 | PATCH | Ensure password expiration is 365 days or less | update file"
+      lineinfile:
+        state: present
+        dest:  /etc/login.defs
+        regexp: '^PASS_MAX_DAYS'
+        line: "PASS_MAX_DAYS {{ centos7cis_pass['max_days'] }}"
+  when:
+    - centos7cis_rule_5_4_1_1
+  tags:
+      - level1
+      - scored
+      - patch
+      - rule_5.4.1.1
+
+- name: "SCORED | 5.4.1.2 | PATCH | Ensure minimum days between password changes is 7 or more"
+  block:
+    - name: "SCORED | 5.4.1.2 | PATCH | Ensure minimum days between password changes is 7 or more | ensure min_days is more than 7"
+      assert:
+        that:
+          - centos7cis_pass['min_days'] >= 7
+        fail_msg: "centos7cis_pass['min_days'] variable is less than 7 days"
+      
+    - name: "SCORED | 5.4.1.2 | PATCH | Ensure minimum days between password changes is 7 or more | update /etc/login.defs"
+      lineinfile:
+        state: present
+        dest:  /etc/login.defs
+        regexp: '^PASS_MIN_DAYS'
+        line: "PASS_MIN_DAYS {{ centos7cis_pass['min_days'] }}"
+  when:
+      - centos7cis_rule_5_4_1_2
+  tags:
+      - level1
+      - scored
+      - patch
+      - rule_5.4.1.2
+
+- name: "SCORED | 5.4.1.3 | PATCH | Ensure password expiration warning days is 7 or more"
+  block:
+    - name: "SCORED | 5.4.1.3 | PATCH | Ensure password expiration warning days is 7 or more | ensure warn_age is more than 7"
+      assert:
+        that:
+          - centos7cis_pass['warn_age'] >= 7
+        fail_msg: "centos7cis_pass['warn_age'] variable is less than 7 days"
+      
+    - name: "SCORED | 5.4.1.3 | PATCH | Ensure password expiration warning days is 7 or more | update /etc/login.defs"
+      lineinfile:
+        state: present
+        dest:  /etc/login.defs
+        regexp: '^PASS_WARN_AGE'
+        line: "PASS_WARN_AGE {{ centos7cis_pass['warn_age'] }}"
+  when:
+      - centos7cis_rule_5_4_1_3
+  tags:
+      - level1
+      - scored
+      - patch
+      - rule_5.4.1.3
+
+- name: "SCORED | 5.4.1.4 | PATCH | Ensure inactive password lock is 30 days or less"
+  command: useradd -D -f 30
+  when:
+    - centos7cis_rule_5_4_1_4
+    - not centos7cis_skip_for_docker
+  tags:
+      - level1
+      - scored
+      - patch
+      - rule_5.4.1.4
+
+- name: "SCORED | 5.4.1.5 | PATCH | Ensure all users last password change date is in the past"
+  command: /bin/true
+  changed_when: false
+  when:
+      - centos7cis_rule_5_4_1_5
+  tags:
+      - level1
+      - scored
+      - patch
+      - rule_5.4.1.5
+      - not_implemented
+
+- name: "SCORED | 5.4.2 | PATCH | Ensure system accounts are non-login"
+  block: 
+    - name: "5.4.2 | Ensure system accounts are non-login | Get Users"
+      command: "awk -F: '($3 < 1000) {print $1 }' /etc/passwd"
+      register: sys_users
+
+    - name: "5.4.2 | Ensure system accounts are non-login | Lock users"
+      user:
+        name: item
+        password_lock: yes
+      when:
+        - item != "root"
+      with_items: "{{ sys_users.stdout.split('\n') }}"
+
+    - name: "5.4.2 | Ensure system accounts are non-login | Set nonlogin shell"
+      user:
+        name: item
+        shell: /usr/sbin/nologin
+      when:
+        - item != "root"
+        - item != "sync"
+        - item != "shutdown"
+        - item != "halt"
+      with_items: "{{ sys_users.stdout.split('\n') }}"
+
+  when:
+    - centos7cis_rule_5_4_2
+    - not centos7cis_skip_for_docker
+  tags:
+      - level1
+      - patch
+      - rule_5.4.2
+      - scored
+
+- name: "SCORED | 5.4.3 | PATCH | Ensure default group for the root account is GID 0"
+  command: usermod -g 0 root
+  when:
+    - centos7cis_rule_5_4_3
+    - not centos7cis_skip_for_docker
+  tags:
+      - level1
+      - patch
+      - rule_5.4.3
+      - scored
+
+- name: "SCORED | 5.4.4 | PATCH | Ensure default user umask is 027 or more restrictive"
+  block:
+    - name: "SCORED | 5.4.4 | PATCH | Ensure default user umask is 027 or more restrictive | bash"
+      lineinfile:
+        state: present
+        dest: /etc/bashrc
+        regexp: '^umask'
+        line: 'umask 027'
+
+    - name: "SCORED | 5.4.4 | PATCH | Ensure default user umask is 027 or more restrictive | profile"
+      lineinfile:
+        state: present
+        dest: /etc/profile
+        regexp: '^umask'
+        line: 'umask 027'
+
+    - name: "SCORED | 5.4.4 | PATCH | Ensure default user umask is 027 or more restrictive | get shells"
+      find:
+        paths: /etc/profile.d/
+        patterns: '*.sh'
+      register: shell_files
+
+    - name: "SCORED | 5.4.4 | PATCH | Ensure default user umask is 027 or more restrictive | umask shells"
+      lineinfile:
+        state: present
+        dest: "{{ item.path }}"
+        regexp: '^umask'
+        line: 'umask 027'
+      with_items: "{{ shell_files.files }}"
+  when:
+      - centos7cis_rule_5_4_4
+  tags:
+      - level1
+      - patch
+      - rule_5.4.4
+      - scored
+
+- name: "SCORED | 5.4.5 | PATCH | Ensure default user shell timeout is 900 seconds or less"
+  block:
+    - name: "SCORED | 5.4.5 | PATCH | Ensure default user shell timeout is 900 seconds or less | ensure timeout is less than 900"
+      assert:
+        that:
+          - centos7cis_shell['timeout'] <= 900
+        fail_msg: "centos7cis_shell['timeout'] variable is more than 900 s"
+
+    - name: "SCORED | 5.4.5 | PATCH | Ensure default user shell timeout is 900 seconds or less | bash"
+      lineinfile:
+        state: present
+        dest: /etc/bashrc
+        regexp: '^TMOUT'
+        line: "TMOUT={{ centos7cis_shell['timeout'] }}"
+
+    - name: "SCORED | 5.4.5 | PATCH | Ensure default user shell timeout is 900 seconds or less | profile"
+      lineinfile:
+        state: present
+        dest: /etc/profile
+        regexp: '^TMOUT'
+        line: "TMOUT={{ centos7cis_shell['timeout'] }}"
+  when:
+      - centos7cis_rule_5_4_5
+  tags:
+      - level1
+      - patch
+      - rule_5.4.5
+      - scored
+
+- name: "NOTSCORED | 5.5 | PATCH | Ensure root login is restricted to system console"
+  command: /bin/true
+  changed_when: false
+  when:
+      - centos7cis_rule_5_5
+  tags:
+      - level1
+      - patch
+      - rule_5.5
+      - notscored
+      - notimplemented
+
+- name: "SCORED | 5.6 | PATCH | Ensure access to the su command is restricted"
+  block:
+    - name: "SCORED | 5.6 | PATCH | Ensure access to the su command is restricted | update file"
+      lineinfile:
+        state: present
+        dest: /etc/pam.d/su
+        regexp: '^(#)?auth\s+required\s+pam_wheel\.so'
+        line: "auth required pam_wheel.so use_uid"
+
+    - name: "SCORED | 5.6 | PATCH | Ensure access to the su command is restricted | update groups"
+      user:
+        name: root
+        groups: wheel
+  when:
+      - centos7cis_rule_5_6
+  tags:
+      - level1
+      - patch
+      - rule_5.6
+      - scored

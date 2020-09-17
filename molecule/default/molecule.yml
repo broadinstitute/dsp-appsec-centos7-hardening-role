@@ -1,0 +1,14 @@
+---
+dependency:
+  name: galaxy
+driver:
+  name: docker
+vars:
+  ansible_python_interpreter: /usr/bin/python3
+platforms:
+  - name: instance
+    image: debian:9
+provisioner:
+  name: ansible
+verifier:
+  name: ansible

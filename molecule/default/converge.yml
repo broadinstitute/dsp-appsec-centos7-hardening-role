@@ -1,0 +1,7 @@
+---
+- name: Converge
+  hosts: all
+  tasks:
+    - name: "Include dsp-appsec-centos7-hardening-role"
+      include_role:
+        name: "dsp-appsec-centos7-hardening-role"
